@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 
 
 function GetSupplier() {
-    console.log("rendered!")
     const [supplier, setSuppliers] = useState([]);
     const navigate = useNavigate();
   

@@ -9,7 +9,6 @@ from .models import Supplier, ContactPerson, Product
 from .serializers import SupplierSerializer, ContactPersonSerializer, ProductSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
 
 @api_view(['POST'])
 def register_user(request):
@@ -27,8 +26,10 @@ def login_view(request):
     # Authenticate the user
     user = authenticate(request, username=username, password=password)
     if user is not None:
-        login(request, user)  # Creates a session for the logged-in user
+        login(request, user) 
+        print("logged In")
         return Response({"detail": "Login successful"}, status=status.HTTP_200_OK)
+        
     else:
         return Response({"detail": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
     
@@ -60,7 +61,7 @@ def contact_person_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-@login_required
+
 def contact_person_detail(request, pk):
     try:
         contact_person = ContactPerson.objects.get(pk=pk)
@@ -83,7 +84,7 @@ def contact_person_detail(request, pk):
 
 # CRUD for Product
 @api_view(['GET', 'POST'])
-@login_required
+
 def product_list(request):
     if request.method == 'GET':
         products = Product.objects.all()
@@ -98,7 +99,7 @@ def product_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-@login_required
+
 def product_detail(request, pk):
     try:
         product = Product.objects.get(pk=pk)
@@ -120,7 +121,7 @@ def product_detail(request, pk):
 
 
 @api_view(['GET', 'POST'])
-#@login_required
+
 def supplier_list(request):
     if request.method == 'GET':
         suppliers = Supplier.objects.all()
@@ -129,15 +130,17 @@ def supplier_list(request):
         print(serializer.data)
         return Response(serializer.data)
     elif request.method == 'POST':
+        print(request.data)
         serializer = SupplierSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-@login_required
+
 def supplier_detail(request, pk):
     try:
         supplier = Supplier.objects.get(pk=pk)

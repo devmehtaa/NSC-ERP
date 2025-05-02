@@ -7,6 +7,7 @@ import Logout from './pages/Logout';
 import Home from './pages/Home';
 import Suppliers from './pages/Suppliers';
 import SupplierDetail from './pages/SupplierDetail';
+import SupplierCreate from './pages/SupplierCreate';
 
 axios.defaults.withCredentials = true;
 
@@ -32,8 +33,8 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path='/home' element={<Home/>}/>
         <Route path='/suppliers' element={<Suppliers/>}/>
-        <Route path='/suppliers/${sup.id}' element={<SupplierDetail/>}/>
-        
+        <Route path='/suppliers/:id' element={<SupplierDetail/>}/>
+        <Route path='/suppliers/create' element={<SupplierCreate/>}/>
       </Routes>
     </Router>
   );
