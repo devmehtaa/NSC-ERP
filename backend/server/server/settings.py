@@ -43,9 +43,15 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  #React app URL
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

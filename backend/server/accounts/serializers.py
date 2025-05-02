@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth import authenticate
+from .models import Supplier, ContactPerson, Product
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,3 +27,29 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Invalid Credentials")
+    
+class ContactPersonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactPerson
+        fields = '__all__'
+
+
+# Product Serializer
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+
+# Supplier Serializer
+class SupplierSerializer(serializers.ModelSerializer):
+    # Include nested serializers for related models
+    contacts = ContactPersonSerializer(many=True, read_only=True)
+    products = ProductSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Supplier
+        fields = '__all__'
+
+    # Optionally, you can add the 'main_person' field as a writable field to allow update
+    #main_person = serializers.PrimaryKeyRelatedField(queryset=ContactPerson.objects.all(), required=False)

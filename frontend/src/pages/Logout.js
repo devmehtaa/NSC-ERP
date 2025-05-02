@@ -1,27 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { getAccessToken, logout } from '../components/Auth';
+import Axios from '../components/AxiosInstance';
+import { useNavigate } from 'react-router-dom';
 
 function Logout() {
-  const [data, setData] = useState(null);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    axios.get('http://localhost:8000/api/logout/', {
-      headers: {
-        Authorization: `Bearer ${getAccessToken()}`
-      }
-    })
-    .then(res => setData(res.data))
-    .catch(() => alert('Unauthorized'));
-  }, []);
+  const handleLogout = async () => {
+    try {
+      // Send the logout request with credentials included
+      await Axios.post('http://localhost:8000/api/logout/', {}, { withCredentials: true });
+      console.log('Logout successful');
+      navigate('/login')
+      // Redirect user or update state here
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
+  };
 
-  return (
-    <div>
-      <h2>Logout</h2>
-      {data ? <p>{JSON.stringify(data)}</p> : <p>Loading...</p>}
-      <button onClick={logout}>Logout</button>
-    </div>
-  );
+  return <button onClick={handleLogout}>Logout</button>;
 }
 
 export default Logout;
