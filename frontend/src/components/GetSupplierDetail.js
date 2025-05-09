@@ -1,25 +1,40 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {Card,CardContent,Typography,Link,Grid,List,ListItem,ListItemText,Divider,Box, Button} from '@mui/material';
+import {
+  Card,
+  CardContent,
+  Typography,
+  Link,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  Box,
+  Button
+} from '@mui/material';
 import DeleteSupplier from './DeleteSupplier';
+import AddContact from './AddContact';
 
 function GetSupplierDetail() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [supplier, setSupplier] = useState(null);
+  const [showAddContactForm, setShowAddContactForm] = useState(false); 
+
+  // Fetch supplier data
+  const fetchSupplier = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/suppliers/${id}/`, {
+        withCredentials: true
+      });
+      setSupplier(response.data);
+    } catch (error) {
+      console.error('Error fetching supplier:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchSupplier = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8000/api/suppliers/${id}/`, { withCredentials: true });
-        console.log('Supplier Data:', response.data);
-        setSupplier(response.data);
-        console.log(response.data)
-      } catch (error) {
-        console.error('Error fetching supplier:', error);
-      }
-    };
-
     fetchSupplier();
   }, [id]);
 
@@ -27,6 +42,7 @@ function GetSupplierDetail() {
 
   return (
     <Box sx={{ padding: 4 }}>
+      {/* Supplier Info */}
       <Card elevation={3} sx={{ maxWidth: 800, margin: 'auto', mb: 4 }}>
         <CardContent>
           <Typography variant="h4" gutterBottom>
@@ -47,9 +63,17 @@ function GetSupplierDetail() {
       {/* Contacts Section */}
       <Card elevation={3} sx={{ maxWidth: 800, margin: 'auto', mb: 4 }}>
         <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Contacts
-          </Typography>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Typography variant="h5">Contacts</Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setShowAddContactForm(true)} 
+            >
+              Add Contact
+            </Button>
+          </Box>
+
           {supplier.contacts.length > 0 ? (
             <List>
               {supplier.contacts.map((c) => (
@@ -57,7 +81,9 @@ function GetSupplierDetail() {
                   <ListItem>
                     <ListItemText
                       primary={c.name}
-                      secondary={`Email: ${c.email || 'N/A'} | Phone: ${c.phone || 'N/A'} | Designation: ${c.designation || 'N/A'}`}
+                      secondary={`Email: ${c.email || 'N/A'} | Phone: ${
+                        c.phone || 'N/A'
+                      } | Designation: ${c.designation || 'N/A'}`}
                     />
                   </ListItem>
                   <Divider />
@@ -66,6 +92,16 @@ function GetSupplierDetail() {
             </List>
           ) : (
             <Typography variant="body2">No contacts available.</Typography>
+          )}
+
+          {showAddContactForm && (
+            <AddContact
+              supplierId={supplier.id}
+              onSuccess={() => {
+                setShowAddContactForm(false);
+                fetchSupplier(); 
+              }}
+            />
           )}
         </CardContent>
       </Card>
@@ -83,7 +119,9 @@ function GetSupplierDetail() {
                   <ListItem>
                     <ListItemText
                       primary={p.name}
-                      secondary={`Description: ${p.description || 'N/A'} | Unit: ${p.unit} | Price: $${p.price} | Available: ${p.availability ? 'Yes' : 'No'}`}
+                      secondary={`Description: ${p.description || 'N/A'} | Unit: ${
+                        p.unit
+                      } | Price: $${p.price} | Available: ${p.availability ? 'Yes' : 'No'}`}
                     />
                   </ListItem>
                   <Divider />
@@ -95,9 +133,11 @@ function GetSupplierDetail() {
           )}
         </CardContent>
       </Card>
-      {/* delete button */}
-      <DeleteSupplier/>
-      {/* delete button  */}
+
+      {/* Delete Supplier Button */}
+      <Box sx={{ mt: 4, textAlign: 'center' }}>
+        <DeleteSupplier />
+      </Box>
     </Box>
   );
 }
