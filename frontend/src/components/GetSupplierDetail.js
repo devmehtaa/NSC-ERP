@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
@@ -17,10 +17,10 @@ import DeleteSupplier from './DeleteSupplier';
 import AddContact from './AddContact';
 
 function GetSupplierDetail() {
-  const navigate = useNavigate();
   const { id } = useParams();
   const [supplier, setSupplier] = useState(null);
   const [showAddContactForm, setShowAddContactForm] = useState(false); 
+  const [editingContact, setEditingContact] = useState(null);
 
   // Fetch supplier data
   const fetchSupplier = async () => {
@@ -39,6 +39,11 @@ function GetSupplierDetail() {
   }, [id]);
 
   if (!supplier) return <Typography variant="h6">Loading supplier details...</Typography>;
+
+  const handleEditContact = (contact) => {
+    setEditingContact(contact);               // store the contact to edit
+    setShowAddContactForm(true);             // show the form
+  };
 
   return (
     <Box sx={{ padding: 4 }}>
@@ -78,7 +83,17 @@ function GetSupplierDetail() {
             <List>
               {supplier.contacts.map((c) => (
                 <div key={c.id}>
-                  <ListItem>
+                  <ListItem
+                    secondaryAction={
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => handleEditContact(c)} 
+                      >
+                        Edit
+                      </Button>
+                    }
+                  >
                     <ListItemText
                       primary={c.name}
                       secondary={`Email: ${c.email || 'N/A'} | Phone: ${
@@ -96,10 +111,12 @@ function GetSupplierDetail() {
 
           {showAddContactForm && (
             <AddContact
-              supplierId={supplier.id}
-              onSuccess={() => {
-                setShowAddContactForm(false);
-                fetchSupplier(); 
+            supplierId={supplier.id}
+            existingContact={editingContact}
+            onSuccess={() => {
+              setShowAddContactForm(false);
+              setEditingContact(null);
+              fetchSupplier(); 
               }}
             />
           )}

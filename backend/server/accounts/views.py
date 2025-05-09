@@ -61,7 +61,6 @@ def contact_person_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-
 def contact_person_detail(request, pk):
     try:
         contact_person = ContactPerson.objects.get(pk=pk)
