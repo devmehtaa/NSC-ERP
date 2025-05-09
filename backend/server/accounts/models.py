@@ -32,4 +32,4 @@ class Product(models.Model):
     availability = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.name} ({self.supplier.name})"
+        return f"{self.name}"
