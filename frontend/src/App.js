@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import axios from 'axios'
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -29,7 +29,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
         <Route path="/register" element={<Register />} />
         <Route path="/logout" element={<Logout />} />
@@ -37,7 +36,10 @@ function App() {
         <Route path='/suppliers' element={<Suppliers/>}/>
         <Route path='/suppliers/:id' element={<SupplierDetail/>}/>
         <Route path='/suppliers/create' element={<SupplierCreate/>}/>
+
         <Route path="/suppliers/:id/edit" element={<EditSupplier />} />
+
+
       </Routes>
     </Router>
   );
