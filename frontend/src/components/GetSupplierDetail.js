@@ -26,7 +26,6 @@ function GetSupplierDetail() {
   const [showAddProductForm, setShowAddProductForm] = useState(false);
   const [editingContact, setEditingContact] = useState(null);
 
-  // Fetch supplier data
   const fetchSupplier = async () => {
     try {
       const response = await axios.get(`http://localhost:8000/api/suppliers/${id}/`, {
@@ -46,6 +45,13 @@ function GetSupplierDetail() {
 
   const handleEdit = () => navigate(`/suppliers/${id}/edit`);
 
+  
+  const handleEditContact = (contact) => {
+    console.log("Editing contact:", contact);
+    setEditingContact(contact);
+    setShowAddContactForm(true);
+  };
+
   return (
     <Box sx={{ padding: 4 }}>
       {/* Supplier Info */}
@@ -54,7 +60,7 @@ function GetSupplierDetail() {
           <Box display="flex" justifyContent="space-between" alignItems="flex-start">
             <Box>
               <Typography variant="h4" gutterBottom>
-                {supplier.name}
+                {supplier?.name}
               </Typography>
               <Typography variant="body1" gutterBottom>
                 <strong>Address:</strong> {supplier.address || 'N/A'}
@@ -85,7 +91,10 @@ function GetSupplierDetail() {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => setShowAddContactForm(true)} 
+              onClick={() => {
+                setEditingContact(null); 
+                setShowAddContactForm(true);
+              }}
             >
               Add Contact
             </Button>
@@ -95,7 +104,17 @@ function GetSupplierDetail() {
             <List>
               {supplier.contacts.map((c) => (
                 <div key={c.id}>
-                  <ListItem>
+                  <ListItem
+                    secondaryAction={
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => handleEditContact(c)} 
+                      >
+                        Edit
+                      </Button>
+                    }
+                  >
                     <ListItemText
                       primary={c.name}
                       secondary={`Email: ${c.email || 'N/A'} | Phone: ${
@@ -114,9 +133,11 @@ function GetSupplierDetail() {
           {showAddContactForm && (
             <AddContact
               supplierId={supplier.id}
+              existingContact={editingContact}  
               onSuccess={() => {
                 setShowAddContactForm(false);
-                fetchSupplier(); 
+                setEditingContact(null);       
+                fetchSupplier();
               }}
             />
           )}
