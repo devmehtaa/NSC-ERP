@@ -1,33 +1,25 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import GetSupplierDetail from "../components/GetSupplierDetail";
+import { Card, CardContent, Button, Typography, Box } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useParams, useNavigate } from 'react-router-dom';
+import GetSupplierDetail from '../components/GetSupplierDetail';
 
 function SupplierDetail() {
-  const navigate = useNavigate(); 
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const handleBack = () => {
-    navigate("/suppliers");
-  };
+  const handleBack = () => navigate('/suppliers');
+  const handleEdit = () => navigate(`/suppliers/${id}/edit`);
 
   return (
     <div>
-      {/* Back Button */}
-      <div style={{ padding: "16px" }}>
-        <Button
-          variant="outlined"
-          startIcon={<ArrowBackIcon />}
-          onClick={handleBack}
-        >
-          Back to Menu
-        </Button>
-      </div>
+      <Button variant="outlined" onClick={handleBack} startIcon={<ArrowBackIcon />}>
+        Back to Menu
+      </Button>
 
-      {/* Supplier Details */}
-      <div style={{ padding: "16px" }}>
+      <Box sx={{ mt: 2 }}>
         <GetSupplierDetail />
-      </div>
+      </Box>
     </div>
   );
 }
