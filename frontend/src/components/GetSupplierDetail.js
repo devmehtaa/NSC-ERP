@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
@@ -16,11 +16,14 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteSupplier from './DeleteSupplier';
 import AddContact from './AddContact';
+import AddProduct from './AddProduct';
 
 function GetSupplierDetail() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [supplier, setSupplier] = useState(null);
-  const [showAddContactForm, setShowAddContactForm] = useState(false); 
+  const [showAddContactForm, setShowAddContactForm] = useState(false);
+  const [showAddProductForm, setShowAddProductForm] = useState(false);
   const [editingContact, setEditingContact] = useState(null);
 
   // Fetch supplier data
@@ -41,9 +44,7 @@ function GetSupplierDetail() {
 
   if (!supplier) return <Typography variant="h6">Loading supplier details...</Typography>;
 
-
   const handleEdit = () => navigate(`/suppliers/${id}/edit`);
-
 
   return (
     <Box sx={{ padding: 4 }}>
@@ -94,17 +95,7 @@ function GetSupplierDetail() {
             <List>
               {supplier.contacts.map((c) => (
                 <div key={c.id}>
-                  <ListItem
-                    secondaryAction={
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={() => handleEditContact(c)} 
-                      >
-                        Edit
-                      </Button>
-                    }
-                  >
+                  <ListItem>
                     <ListItemText
                       primary={c.name}
                       secondary={`Email: ${c.email || 'N/A'} | Phone: ${
@@ -122,12 +113,10 @@ function GetSupplierDetail() {
 
           {showAddContactForm && (
             <AddContact
-            supplierId={supplier.id}
-            existingContact={editingContact}
-            onSuccess={() => {
-              setShowAddContactForm(false);
-              setEditingContact(null);
-              fetchSupplier(); 
+              supplierId={supplier.id}
+              onSuccess={() => {
+                setShowAddContactForm(false);
+                fetchSupplier(); 
               }}
             />
           )}
@@ -137,9 +126,17 @@ function GetSupplierDetail() {
       {/* Products Section */}
       <Card elevation={3} sx={{ maxWidth: 800, margin: 'auto' }}>
         <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Products
-          </Typography>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Typography variant="h5">Products</Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setShowAddProductForm(true)}
+            >
+              Add Product
+            </Button>
+          </Box>
+
           {supplier.products.length > 0 ? (
             <List>
               {supplier.products.map((p) => (
@@ -158,6 +155,16 @@ function GetSupplierDetail() {
             </List>
           ) : (
             <Typography variant="body2">No products listed.</Typography>
+          )}
+
+          {showAddProductForm && (
+            <AddProduct
+              supplierId={supplier.id}
+              onSuccess={() => {
+                setShowAddProductForm(false);
+                fetchSupplier();
+              }}
+            />
           )}
         </CardContent>
       </Card>
