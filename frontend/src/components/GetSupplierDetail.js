@@ -24,6 +24,7 @@ function GetSupplierDetail() {
   const [supplier, setSupplier] = useState(null);
   const [showAddContactForm, setShowAddContactForm] = useState(false);
   const [showAddProductForm, setShowAddProductForm] = useState(false);
+  const [editingContact, setEditingContact] = useState(null);
 
   // Fetch supplier data
   const fetchSupplier = async () => {
