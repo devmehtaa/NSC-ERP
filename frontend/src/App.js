@@ -36,7 +36,9 @@ function App() {
         <Route path='/suppliers' element={<Suppliers/>}/>
         <Route path='/suppliers/:id' element={<SupplierDetail/>}/>
         <Route path='/suppliers/create' element={<SupplierCreate/>}/>
+
         <Route path="/suppliers/:id/edit" element={<EditSupplier />} />
+
 
       </Routes>
     </Router>

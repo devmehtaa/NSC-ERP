@@ -1,8 +1,8 @@
 import { TextField, Button, Box, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function AddContact({ supplierId, onSuccess }){
+function AddContact({ supplierId, onSuccess, existingContact }){
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -11,6 +11,18 @@ function AddContact({ supplierId, onSuccess }){
       });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    
+    useEffect(() => {
+    if (existingContact) {
+        setFormData({
+        name: existingContact.name || '',
+        email: existingContact.email || '',
+        phone: existingContact.phone || '',
+        designation: existingContact.designation || '',
+        });
+    }
+    }, [existingContact]);  
+
     const handleChange = (e) => {
         setFormData((prev) => ({
           ...prev,
@@ -22,6 +34,18 @@ function AddContact({ supplierId, onSuccess }){
         setError('');
         setSuccess('');
         try {
+            if (existingContact && existingContact.id) {
+                // Edit mode: update the contact
+                await axios.put(
+                  `http://localhost:8000/api/contactpersons/${existingContact.id}/`,
+                  {
+                    ...formData,
+                    supplier: supplierId,
+                  },
+                  { withCredentials: true }
+                );
+                setSuccess('Contact updated successfully!');
+              } else {
             const response = await axios.post(
               'http://localhost:8000/api/contactpersons/',
               {
@@ -32,6 +56,7 @@ function AddContact({ supplierId, onSuccess }){
             );
             setSuccess('Contact added successfully!');
             setFormData({ name: '', email: '', phone: '', designation: '' });
+            }
             setTimeout(() => {
                 setSuccess('');
                 onSuccess();
