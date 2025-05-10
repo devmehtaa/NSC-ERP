@@ -16,12 +16,14 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteSupplier from './DeleteSupplier';
 import AddContact from './AddContact';
+import AddProduct from './AddProduct';
 
 function GetSupplierDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [supplier, setSupplier] = useState(null);
-  const [showAddContactForm, setShowAddContactForm] = useState(false); 
+  const [showAddContactForm, setShowAddContactForm] = useState(false);
+  const [showAddProductForm, setShowAddProductForm] = useState(false);
 
   // Fetch supplier data
   const fetchSupplier = async () => {
@@ -123,9 +125,17 @@ function GetSupplierDetail() {
       {/* Products Section */}
       <Card elevation={3} sx={{ maxWidth: 800, margin: 'auto' }}>
         <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Products
-          </Typography>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Typography variant="h5">Products</Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setShowAddProductForm(true)}
+            >
+              Add Product
+            </Button>
+          </Box>
+
           {supplier.products.length > 0 ? (
             <List>
               {supplier.products.map((p) => (
@@ -144,6 +154,16 @@ function GetSupplierDetail() {
             </List>
           ) : (
             <Typography variant="body2">No products listed.</Typography>
+          )}
+
+          {showAddProductForm && (
+            <AddProduct
+              supplierId={supplier.id}
+              onSuccess={() => {
+                setShowAddProductForm(false);
+                fetchSupplier();
+              }}
+            />
           )}
         </CardContent>
       </Card>
