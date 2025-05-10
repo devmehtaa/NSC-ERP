@@ -13,6 +13,7 @@ import {
   Box,
   Button
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import DeleteSupplier from './DeleteSupplier';
 import AddContact from './AddContact';
 
@@ -40,23 +41,36 @@ function GetSupplierDetail() {
 
   if (!supplier) return <Typography variant="h6">Loading supplier details...</Typography>;
 
+  const handleEdit = () => navigate(`/suppliers/${id}/edit`);
+
   return (
     <Box sx={{ padding: 4 }}>
       {/* Supplier Info */}
       <Card elevation={3} sx={{ maxWidth: 800, margin: 'auto', mb: 4 }}>
         <CardContent>
-          <Typography variant="h4" gutterBottom>
-            {supplier.name}
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            <strong>Address:</strong> {supplier.address || 'N/A'}
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            <strong>Website:</strong>{' '}
-            <Link href={supplier.website} target="_blank" rel="noopener">
-              {supplier.website || 'N/A'}
-            </Link>
-          </Typography>
+          <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+            <Box>
+              <Typography variant="h4" gutterBottom>
+                {supplier.name}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                <strong>Address:</strong> {supplier.address || 'N/A'}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                <strong>Website:</strong>{' '}
+                <Link href={supplier.website} target="_blank" rel="noopener">
+                  {supplier.website || 'N/A'}
+                </Link>
+              </Typography>
+            </Box>
+            <Button
+              variant="contained"
+              startIcon={<EditIcon />}
+              onClick={handleEdit}
+            >
+              Edit Supplier
+            </Button>
+          </Box>
         </CardContent>
       </Card>
 

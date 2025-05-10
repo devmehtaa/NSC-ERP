@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Suppliers from './pages/Suppliers';
 import SupplierDetail from './pages/SupplierDetail';
 import SupplierCreate from './pages/SupplierCreate';
+import EditSupplier from './pages/EditSupplier';
 
 axios.defaults.withCredentials = true;
 
@@ -35,6 +36,8 @@ function App() {
         <Route path='/suppliers' element={<Suppliers/>}/>
         <Route path='/suppliers/:id' element={<SupplierDetail/>}/>
         <Route path='/suppliers/create' element={<SupplierCreate/>}/>
+        <Route path="/suppliers/:id/edit" element={<EditSupplier />} />
+
       </Routes>
     </Router>
   );
