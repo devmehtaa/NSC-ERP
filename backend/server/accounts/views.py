@@ -9,6 +9,9 @@ from .models import Supplier, ContactPerson, Product
 from .serializers import SupplierSerializer, ContactPersonSerializer, ProductSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
+import logging
+
+logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 def register_user(request):
@@ -27,7 +30,7 @@ def login_view(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user) 
-        print("logged In")
+        logger.debug("logged In")
         return Response({"detail": "Login successful"}, status=status.HTTP_200_OK)
         
     else:
@@ -125,16 +128,15 @@ def supplier_list(request):
     if request.method == 'GET':
         suppliers = Supplier.objects.all()
         serializer = SupplierSerializer(suppliers, many=True)
-        print("supplier data:")
-        print(serializer.data)
+        logger.debug("supplier data: %s", serializer.data)
         return Response(serializer.data)
     elif request.method == 'POST':
-        print(request.data)
+        logger.debug("POST request data: %s", request.data)
         serializer = SupplierSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print(serializer.errors)
+        logger.debug("serializer errors: %s", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
