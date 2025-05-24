@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { CssBaseline, IconButton, Box } from '@mui/material';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import axios from 'axios'
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Logout from './pages/Logout';
@@ -12,7 +16,20 @@ import EditSupplier from './pages/EditSupplier';
 
 axios.defaults.withCredentials = true;
 
-function App() {
+function ThemeToggle() {
+  const { mode, toggleTheme } = useTheme();
+  return (
+    <IconButton 
+      onClick={toggleTheme} 
+      color="inherit"
+      sx={{ position: 'fixed', top: 16, right: 16, zIndex: 1000 }}
+    >
+      {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+    </IconButton>
+  );
+}
+
+function AppContent() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -27,7 +44,8 @@ function App() {
   }, []);
 
   return (
-    <Router>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+      <ThemeToggle />
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
@@ -39,7 +57,18 @@ function App() {
         <Route path='/suppliers/create' element={<SupplierCreate/>}/>
         <Route path="/suppliers/:id/edit" element={<EditSupplier />} />
       </Routes>
-    </Router>
+    </Box>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <CssBaseline />
+      <Router>
+        <AppContent />
+      </Router>
+    </ThemeProvider>
   );
 }
 

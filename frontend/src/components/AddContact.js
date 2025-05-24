@@ -2,12 +2,12 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function AddContact({ supplierId, onSuccess, existingContact }) {
+function AddContact({ supplierId, onSuccess, existingContact, onCancel }) {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    designation: '',
+    name: existingContact?.name || '',
+    email: existingContact?.email || '',
+    phone: existingContact?.phone || '',
+    designation: existingContact?.designation || '',
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -32,10 +32,10 @@ function AddContact({ supplierId, onSuccess, existingContact }) {
   }, [existingContact]);
 
   const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
+    setFormData({
+      ...formData,
       [e.target.name]: e.target.value,
-    }));
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -124,10 +124,21 @@ function AddContact({ supplierId, onSuccess, existingContact }) {
         {error && <Typography color="error" sx={{ mt: 1 }}>{error}</Typography>}
         {success && <Typography color="primary" sx={{ mt: 1 }}>{success}</Typography>}
 
-        {/* 🔸 Dynamic button label */}
-        <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-          {existingContact ? 'Update Contact' : 'Add Contact'}
-        </Button>
+        <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+          >
+            {existingContact ? 'Update Contact' : 'Add Contact'}
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={onCancel}
+          >
+            Cancel
+          </Button>
+        </Box>
       </form>
     </Box>
   );
